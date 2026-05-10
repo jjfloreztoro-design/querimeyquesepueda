@@ -3,94 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Panel de Edición Tiempo Real - Iván Cepeda</title>
+    <title>Tu foto de apoyo - Iván Cepeda y Aida Quilcué</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <style>
         :root { --morado: #512d6d; --naranja: #ff8a00; --crema: #fcfcf9; }
-        body { background-color: #eee; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 40px; }
+        body { background-color: #f0f0f0; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 40px; color: #333; }
         
-        /* HEADER PROFESIONAL */
+        /* HEADER */
         header { background: white; padding: 15px; border-bottom: 4px solid var(--naranja); display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .audio-container { background: #f0ebf5; padding: 8px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; }
-        audio { height: 28px; width: 180px; }
-        .logo-img { height: 55px; object-fit: contain; }
+        audio { height: 28px; width: 160px; }
+        .logo-img { height: 50px; object-fit: contain; }
 
+        /* GRID PRINCIPAL */
         .main-grid { 
-            display: grid; 
-            grid-template-columns: 380px 1fr; 
+            display: flex; 
+            flex-direction: row; /* Escritorio: Lado a lado */
             gap: 20px; 
             max-width: 1200px; 
             margin: 20px auto; 
             padding: 0 15px;
         }
 
-        /* COLUMNA IZQUIERDA: CONTROL */
-        .control-panel { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
-        .btn-upload { background: var(--morado); color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-bottom: 15px; }
-        #canvas-editor { border: 2px solid #ddd; border-radius: 12px; background: #fafafa; cursor: move; }
+        /* PANEL IZQUIERDO (CONTROL) */
+        .control-panel { 
+            flex: 0 0 380px; 
+            background: white; padding: 20px; border-radius: 20px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center;
+            height: fit-content;
+            position: sticky; top: 20px;
+        }
+        
+        .btn-upload { background: var(--morado); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-bottom: 15px; font-size: 14px; }
+        #canvas-editor { border: 2px solid #ddd; border-radius: 12px; background: #fafafa; max-width: 100%; }
 
-        /* COLUMNA DERECHA: RESULTADOS */
-        .results-panel { background: #f9f9f9; padding: 20px; border-radius: 20px; border: 1px solid #ddd; }
-        .results-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-        .result-item { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .result-item canvas { border-radius: 10px; background: white; max-width: 100%; height: auto; }
-        .btn-download { background: var(--naranja); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; text-transform: uppercase; font-size: 11px; }
+        /* PANEL DERECHO (RESULTADOS) */
+        .results-panel { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 20px; border: 1px solid #ddd; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; justify-items: center; }
+        
+        .result-item { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 340px; }
+        .result-item canvas { border-radius: 10px; background: white; width: 100% !important; height: auto !important; }
+        
+        .btn-download { background: var(--naranja); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
 
-        h2 { font-size: 14px; color: var(--morado); text-transform: uppercase; margin-top: 0; }
-        .instruction { font-size: 12px; color: #666; margin-bottom: 15px; }
+        h2 { font-size: 14px; color: var(--morado); text-transform: uppercase; margin-top: 0; letter-spacing: 1px; }
+        .instruction { font-size: 12px; color: #777; margin-bottom: 15px; font-weight: 500; }
 
+        /* RESPONSIVE: PRIORIDAD MÓVIL */
         @media (max-width: 900px) {
-            .main-grid { grid-template-columns: 1fr; }
-            .control-panel { order: 1; }
+            .main-grid { flex-direction: column; } /* Apilar verticalmente */
+            .control-panel { 
+                flex: none; 
+                width: auto; 
+                position: static; 
+                margin-bottom: 10px; 
+            }
+            .results-panel { padding: 15px; }
+            .results-grid { grid-template-columns: 1fr; }
+            .result-item { max-width: 100%; box-sizing: border-box; }
         }
     </style>
 </head>
 <body>
 
 <header>
+    <img src="logo-cepeda.png" class="logo-img" alt="Logo">
     <div class="audio-container">
-        <span style="font-size: 11px; font-weight: bold; color: var(--morado);">🎵 LAS RIMAS:</span>
+        <span style="font-size: 10px; font-weight: bold; color: var(--morado);">🎵 RIMAS:</span>
         <audio controls src="cancion.mp3"></audio>
     </div>
-    <img src="logo-cepeda.png" class="logo-img" alt="Logo">
 </header>
 
 <div class="main-grid">
     <div class="control-panel">
-        <h2>1. Zona de Carga</h2>
+        <h2>1. TU FOTO AQUÍ</h2>
         <input type="file" id="file-input" hidden accept="image/*">
-        <button class="btn-upload" onclick="document.getElementById('file-input').click()">📂 Seleccionar mi foto</button>
-        <p class="instruction">Mueve, agranda o gira tu foto aquí abajo:</p>
+        <button class="btn-upload" onclick="document.getElementById('file-input').click()">📂 CARGAR MI FOTO</button>
+        <p class="instruction">Usa tus dedos para mover, ampliar o girar la imagen:</p>
         <canvas id="canvas-editor" width="340" height="340"></canvas>
     </div>
 
     <div class="results-panel">
-        <h2>2. Tu perfil en tiempo real</h2>
+        <h2>2. VISTA PREVIA EN VIVO</h2>
         <div class="results-grid">
             <div class="result-item">
-                <p style="font-size:10px; font-weight:900;">DISEÑO 1</p>
+                <p style="font-size:11px; font-weight:900; margin-bottom:10px;">DISEÑO: QUE RIME</p>
                 <canvas id="out1" width="340" height="340"></canvas>
-                <button class="btn-download" onclick="descargar('out1', 'perfil-1.jpg')">📥 Descargar</button>
+                <button class="btn-download" onclick="descargar('out1', 'perfil-cepeda-1.jpg')">📥 DESCARGAR DISEÑO 1</button>
             </div>
             <div class="result-item">
-                <p style="font-size:10px; font-weight:900;">DISEÑO 2</p>
+                <p style="font-size:11px; font-weight:900; margin-bottom:10px;">DISEÑO: PACTO</p>
                 <canvas id="out2" width="340" height="340"></canvas>
-                <button class="btn-download" onclick="descargar('out2', 'perfil-2.jpg')">📥 Descargar</button>
+                <button class="btn-download" onclick="descargar('out2', 'perfil-cepeda-2.jpg')">📥 DESCARGAR DISEÑO 2</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Editor principal
     const editor = new fabric.Canvas('canvas-editor');
-    // Canvases de salida (Espejos)
     const out1 = new fabric.StaticCanvas('out1');
     const out2 = new fabric.StaticCanvas('out2');
     
     let frame1, frame2, userImg;
 
-    // 1. CARGAR MARCOS INICIALES
+    // Cargar marcos con detección de errores
     function loadFrames() {
         fabric.Image.fromURL('marco1.png', (img) => {
             img.set({ left: 0, top: 0, selectable: false, evented: false });
@@ -110,73 +127,57 @@
     }
     loadFrames();
 
-    // 2. MANEJAR SUBIDA DE FOTO
+    // Subida de imagen
     document.getElementById('file-input').onchange = function(e) {
         const reader = new FileReader();
         reader.onload = function(event) {
             if(userImg) {
                 editor.remove(userImg);
-                out1.getObjects().forEach(obj => { if(obj !== frame1) out1.remove(obj); });
-                out2.getObjects().forEach(obj => { if(obj !== frame2) out2.remove(obj); });
+                // Limpiar espejos conservando los marcos
+                [out1, out2].forEach(c => c.getObjects().forEach(obj => { if(obj.selectable === undefined) c.remove(obj); }));
             }
 
             fabric.Image.fromURL(event.target.result, (img) => {
                 img.set({
                     left: 170, top: 170,
                     originX: 'center', originY: 'center',
-                    cornerColor: '#ff8a00', cornerSize: 10
+                    cornerColor: '#ff8a00', cornerSize: 12, transparentCorners: false
                 });
-                img.scaleToWidth(250);
+                img.scaleToWidth(280);
                 userImg = img;
                 
                 editor.add(userImg);
                 editor.setActiveObject(userImg);
 
-                // Crear clones para los espejos
-                userImg.clone((cloned1) => {
-                    cloned1.set({ selectable: false, evented: false });
-                    out1.add(cloned1);
-                    out1.sendToBack(cloned1);
-                    
-                    userImg.clone((cloned2) => {
-                        cloned2.set({ selectable: false, evented: false });
-                        out2.add(cloned2);
-                        out2.sendToBack(cloned2);
-                    });
-                });
+                // Clonar para los resultados
+                userImg.clone((c1) => { c1.selectable = false; out1.add(c1); out1.sendToBack(c1); });
+                userImg.clone((c2) => { c2.selectable = false; out2.add(c2); out2.sendToBack(c2); });
             });
         };
         reader.readAsDataURL(e.target.files[0]);
     };
 
-    // 3. LA MAGIA: ACTUALIZACIÓN EN TIEMPO REAL
+    // Espejo en tiempo real
     editor.on('after:render', () => {
         if (!userImg) return;
         
         const sync = (targetCanvas, targetFrame) => {
-            const mirror = targetCanvas.getObjects().find(obj => obj !== targetFrame);
+            const mirror = targetCanvas.getObjects().find(obj => obj.selectable === false);
             if(mirror) {
                 mirror.set({
-                    left: userImg.left,
-                    top: userImg.top,
-                    scaleX: userImg.scaleX,
-                    scaleY: userImg.scaleY,
-                    angle: userImg.angle,
-                    flipX: userImg.flipX,
-                    flipY: userImg.flipY
+                    left: userImg.left, top: userImg.top,
+                    scaleX: userImg.scaleX, scaleY: userImg.scaleY,
+                    angle: userImg.angle, flipX: userImg.flipX, flipY: userImg.flipY
                 });
                 targetCanvas.renderAll();
             }
         };
-
         sync(out1, frame1);
         sync(out2, frame2);
     });
 
-    // 4. DESCARGA ALTA CALIDAD
     function descargar(canvasId, name) {
         const c = document.getElementById(canvasId);
-        // Multiplicador 3x para 1020px de resolución
         const dataURL = c.fabric.toDataURL({ format: 'jpeg', quality: 0.9, multiplier: 3 });
         const link = document.createElement('a');
         link.download = name;
