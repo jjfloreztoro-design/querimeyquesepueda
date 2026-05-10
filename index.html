@@ -3,44 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Iván Cepeda & Aida Quilcué - Edición Táctil</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <title>Iván Cepeda & Aida Quilcué - Perfil</title>
     <style>
         :root { --morado: #512d6d; --naranja: #ff8a00; --crema: #fcfcf9; }
-        body { background-color: var(--crema); font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; color: #333; overflow-x: hidden; }
+        body { background: var(--crema); font-family: sans-serif; margin: 0; text-align: center; color: #333; }
+        header { background: white; padding: 10px; border-bottom: 4px solid var(--naranja); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo-img { height: 50px; }
         
-        /* HEADER Y AUDIO ESTILO CAMPAÑA */
-        header { background: white; border-bottom: 4px solid var(--naranja); padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo-img { height: 50px; display: block; margin: 0 auto; object-fit: contain; }
-
-        .main-container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
-        h1 { color: var(--morado); font-size: 1.4rem; margin: 0 0 10px; text-transform: uppercase; font-weight: 900; }
-        p.subtitle { font-size: 12px; margin-top: 0; color: #666; }
-
-        /* ZONA DE CARGA (PRIMERO EN MÓVIL) */
-        .controls-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .btn-upload { background: var(--morado); color: white; border: none; padding: 15px 30px; font-weight: bold; border-radius: 50px; cursor: pointer; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
-        .btn-upload:hover { background: var(--naranja); }
-
-        /* GRUPO DE EDICIÓN (DERECHA EN ESCRITORIO, ABAJO EN MÓVIL) */
-        .editor-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .main-container { max-width: 500px; margin: 20px auto; padding: 15px; }
+        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Caja de Edición con Sliders */
-        .edition-box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); width: 100%; max-width: 380px; display: none; /* Se muestra al subir foto */ }
-        .canvas-wrapper { position: relative; margin-bottom: 15px; border-radius: 10px; overflow: hidden; }
-        canvas { background: #e0e0e0; touch-action: none; /* Crucial para móvil */ }
+        .btn-upload { background: var(--morado); color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 14px; }
         
-        /* Estilo de los Sliders Deslizables */
-        .sliders-group { text-align: left; margin-top: 10px; display: none; }
-        .slider-control { margin-bottom: 12px; }
-        .slider-label { font-size: 11px; font-weight: bold; color: var(--morado); display: block; margin-bottom: 4px; }
-        input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; }
-        input[type=range]::-webkit-slider-runnable-track { background: #eee; height: 8px; border-radius: 5px; }
-        input[type=range]::-webkit-slider-thumb { border: 2px solid var(--morado); height: 20px; width: 20px; border-radius: 50%; background: var(--naranja); cursor: pointer; -webkit-appearance: none; margin-top: -6px; }
-
-        .btn-download { background: var(--naranja); color: white; border: none; padding: 12px 20px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 15px; text-transform: uppercase; width: 100%; font-size: 11px; }
-
-        @media (max-width: 768px) { .editor-grid { flex-direction: column; align-items: center; } .edition-box { max-width: 350px; } }
+        .editor-zone { display: none; margin-top: 20px; }
+        .canvas-container { position: relative; width: 340px; height: 340px; margin: 0 auto 15px; background: #eee; border-radius: 10px; overflow: hidden; touch-action: none; }
+        canvas { position: absolute; top: 0; left: 0; }
+        
+        .controls { background: #f0ebf5; padding: 15px; border-radius: 15px; margin-top: 10px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: var(--morado); margin: 10px 0 5px; }
+        input[type=range] { width: 100%; accent-color: var(--naranja); }
+        
+        .btn-download { background: var(--naranja); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -50,175 +33,135 @@
 </header>
 
 <div class="main-container">
-    <div class="controls-card">
-        <h1>CREA TU PERFIL OFICIAL</h1>
-        <p class="subtitle">Sube tu foto y acomódala dentro de los marcos en tiempo real.</p>
+    <div class="card">
+        <h2 style="font-size: 18px; color: var(--morado);">1. CARGA TU FOTO</h2>
         <input type="file" id="upload" hidden accept="image/*">
-        <button class="btn-upload" onclick="document.getElementById('upload').click()">📂 SELECCIONAR FOTO</button>
+        <button class="btn-upload" onclick="document.getElementById('upload').click()">📂 SELECCIONAR IMAGEN</button>
     </div>
 
-    <div class="editor-grid">
-        
-        <div class="edition-box" id="box1">
-            <p style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color:var(--morado)">DISEÑO 1: QUE RIME</p>
-            <div class="canvas-wrapper">
-                <canvas id="canvas1" width="340" height="340"></canvas>
-            </div>
-            
-            <div class="sliders-group" id="sliders1">
-                <div class="slider-control">
-                    <label class="slider-label">AMPLIAR FOTO</label>
-                    <input type="range" id="zoom1" min="0.1" max="2" step="0.01" value="0.5">
-                </div>
-                <div class="slider-control">
-                    <label class="slider-label">ROTAR FOTO</label>
-                    <input type="range" id="rotate1" min="0" max="360" step="1" value="0">
-                </div>
-            </div>
-            <button class="btn-download btn-cepeda" onclick="descargar(canvas1, 'perfil-cepeda-1.jpg')">📥 Descargar Diseño 1</button>
+    <div id="editor1" class="editor-zone card">
+        <h3 style="font-size: 14px;">DISEÑO 1</h3>
+        <div class="canvas-container" id="container1">
+            <canvas id="canvas1" width="340" height="340"></canvas>
         </div>
-
-        <div class="edition-box" id="box2">
-            <p style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color:var(--morado)">DISEÑO 2: AIDA</p>
-            <div class="canvas-wrapper">
-                <canvas id="canvas2" width="340" height="340"></canvas>
-            </div>
-            
-            <div class="sliders-group" id="sliders2">
-                <div class="slider-control">
-                    <label class="slider-label">AMPLIAR FOTO</label>
-                    <input type="range" id="zoom2" min="0.1" max="2" step="0.01" value="0.5">
-                </div>
-                <div class="slider-control">
-                    <label class="slider-label">ROTAR FOTO</label>
-                    <input type="range" id="rotate2" min="0" max="360" step="1" value="0">
-                </div>
-            </div>
-            <button class="btn-download btn-cepeda" onclick="descargar(canvas2, 'perfil-cepeda-2.jpg')">📥 Descargar Diseño 2</button>
+        <div class="controls">
+            <label>TAMAÑO</label>
+            <input type="range" id="zoom1" min="0.1" max="3" step="0.01" value="1">
+            <label>ROTACIÓN</label>
+            <input type="range" id="rotate1" min="0" max="360" value="0">
+            <p style="font-size: 10px; color: #888;">Arrastra la foto con el dedo para centrarla</p>
         </div>
+        <button class="btn-download" onclick="descargar('canvas1', 'perfil1.jpg')">📥 DESCARGAR DISEÑO 1</button>
+    </div>
 
+    <div id="editor2" class="editor-zone card">
+        <h3 style="font-size: 14px;">DISEÑO 2</h3>
+        <div class="canvas-container" id="container2">
+            <canvas id="canvas2" width="340" height="340"></canvas>
+        </div>
+        <div class="controls">
+            <label>TAMAÑO</label>
+            <input type="range" id="zoom2" min="0.1" max="3" step="0.01" value="1">
+            <label>ROTACIÓN</label>
+            <input type="range" id="rotate2" min="0" max="360" value="0">
+        </div>
+        <button class="btn-download" onclick="descargar('canvas2', 'perfil2.jpg')">📥 DESCARGAR DISEÑO 2</button>
     </div>
 </div>
 
 <script>
-    // Configuración de los lienzos
-    const canvas1 = new fabric.Canvas('canvas1', { selection: true });
-    const canvas2 = new fabric.Canvas('canvas2', { selection: true });
-    
-    // Variables para guardar las fotos cargadas
-    var userImg1, userImg2;
+    const setupCanvas = (id, marcoUrl, zoomId, rotateId) => {
+        const canvas = document.getElementById(id);
+        const ctx = canvas.getContext('2d');
+        const zoomInput = document.getElementById(zoomId);
+        const rotateInput = document.getElementById(rotateId);
+        
+        let state = {
+            img: null,
+            marco: null,
+            x: 170, y: 170,
+            scale: 1,
+            angle: 0,
+            isDragging: false,
+            lastX: 0, lastY: 0
+        };
 
-    // 1. CARGA INICIAL DE MARCOS
-    function loadFrames() {
-        fabric.Image.fromURL('marco1.png', function(img) {
-            img.set({ left: 0, top: 0, selectable: false, evented: false });
-            img.scaleToWidth(340);
-            canvas1.add(img);
-            canvas1.renderAll();
-        });
+        // Cargar Marco
+        const m = new Image();
+        m.crossOrigin = "anonymous";
+        m.src = marcoUrl + "?v=" + Date.now();
+        m.onload = () => { state.marco = m; draw(); };
 
-        fabric.Image.fromURL('marco2.png', function(img) {
-            img.set({ left: 0, top: 0, selectable: false, evented: false });
-            img.scaleToWidth(340);
-            canvas2.add(img);
-            canvas2.renderAll();
-        });
-    }
+        const draw = () => {
+            ctx.clearRect(0, 0, 340, 340);
+            if (state.img) {
+                ctx.save();
+                ctx.translate(state.x, state.y);
+                ctx.rotate(state.angle * Math.PI / 180);
+                const w = state.img.width * state.scale;
+                const h = state.img.height * state.scale;
+                ctx.drawImage(state.img, -w/2, -h/2, w, h);
+                ctx.restore();
+            }
+            if (state.marco) ctx.drawImage(state.marco, 0, 0, 340, 340);
+        };
 
-    loadFrames();
+        // Eventos Sliders
+        zoomInput.oninput = (e) => { state.scale = e.target.value; draw(); };
+        rotateInput.oninput = (e) => { state.angle = e.target.value; draw(); };
 
-    // 2. MANEJAR SUBIDA DE FOTO
-    document.getElementById('upload').addEventListener('change', function (e) {
-        var reader = new FileReader();
-        reader.onload = function (f) {
-            var imgData = f.target.result;
-            
-            // setupImageInCanvas(data, canvas, zoomSlider, rotateSlider, slidersGroup, boxGroup)
-            setupImageInCanvas(imgData, canvas1, 'zoom1', 'rotate1', 'sliders1', 'box1');
-            setupImageInCanvas(imgData, canvas2, 'zoom2', 'rotate2', 'sliders2', 'box2');
+        // Eventos Mouse/Touch para mover
+        const start = (e) => {
+            state.isDragging = true;
+            const pos = e.touches ? e.touches[0] : e;
+            state.lastX = pos.clientX;
+            state.lastY = pos.clientY;
+        };
+        const move = (e) => {
+            if (!state.isDragging || !state.img) return;
+            const pos = e.touches ? e.touches[0] : e;
+            state.x += (pos.clientX - state.lastX);
+            state.y += (pos.clientY - state.lastY);
+            state.lastX = pos.clientX;
+            state.lastY = pos.clientY;
+            draw();
+        };
+        const stop = () => state.isDragging = false;
+
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('touchstart', start);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('touchmove', move);
+        window.addEventListener('mouseup', stop);
+        window.addEventListener('touchend', stop);
+
+        return {
+            setImage: (newImg) => { state.img = newImg; draw(); }
+        };
+    };
+
+    const c1 = setupCanvas('canvas1', 'marco1.png', 'zoom1', 'rotate1');
+    const c2 = setupCanvas('canvas2', 'marco2.png', 'zoom2', 'rotate2');
+
+    document.getElementById('upload').onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                c1.setImage(img);
+                c2.setImage(img);
+                document.querySelectorAll('.editor-zone').forEach(el => el.style.display = 'block');
+            };
+            img.src = event.target.result;
         };
         reader.readAsDataURL(e.target.files[0]);
-    });
+    };
 
-    function setupImageInCanvas(data, canvas, zoomId, rotateId, sliderGroupId, boxId) {
-        // Eliminar foto anterior (objetos seleccionables)
-        canvas.getObjects().forEach(obj => {
-            if (obj.selectable) canvas.remove(obj);
-        });
-
-        fabric.Image.fromURL(data, function (img) {
-            img.set({
-                left: 170, top: 170, // Centrado
-                originX: 'center', originY: 'center',
-                hasControls: false, // Ocultar esquinas cuadradas
-                hasBorders: false, // Ocultar borde azul
-                selectable: true // Permitir arrastrar con el dedo
-            });
-            img.scaleToWidth(250); // Escala inicial
-
-            canvas.add(img);
-            
-            // LA MAGIA: Poner la foto DETRÁS del marco PNG
-            canvas.getObjects().forEach(obj => {
-                if(!obj.selectable) canvas.bringToFront(obj);
-            });
-            
-            canvas.setActiveObject(img);
-            canvas.renderAll();
-
-            // Guardar referencia
-            if(canvas.id === 'canvas1') userImg1 = img;
-            else userImg2 = img;
-
-            // Mostrar los controles deslizables y el diseño
-            document.getElementById(boxId).style.display = 'block';
-            document.getElementById(sliderGroupId).style.display = 'block';
-            
-            // Inicializar Sliders
-            initSliderEvents(img, canvas, zoomId, rotateId);
-        });
-    }
-
-    // 3. LA MAGIA: CONECTAR SLIDERS CON LA FOTO
-    function initSliderEvents(imgObj, canvasObj, zoomId, rotateId) {
-        const zoomSlider = document.getElementById(zoomId);
-        const rotateSlider = document.getElementById(rotateId);
-
-        // Resetear sliders a valores iniciales
-        zoomSlider.value = imgObj.scaleX;
-        rotateSlider.value = imgObj.angle;
-
-        // Zoom en tiempo real
-        zoomSlider.addEventListener('input', function() {
-            imgObj.set({
-                scaleX: parseFloat(this.value),
-                scaleY: parseFloat(this.value)
-            });
-            canvasObj.renderAll();
-        });
-
-        // Rotación en tiempo real
-        rotateSlider.addEventListener('input', function() {
-            imgObj.set('angle', parseInt(this.value, 10));
-            canvasObj.renderAll();
-        });
-    }
-
-    // 4. DESCARGA ALTA CALIDAD
-    function descargar(canvasElement, name) {
-        // Obtenemos el objeto Fabric asociado al elemento HTML
-        const fabCanvas = canvasElement.fabric;
-        const multiplier = (1080 / 340); // Convertir 340px a 1080px (Alta calidad)
-        
-        const dataURL = fabCanvas.toDataURL({
-            format: 'jpeg',
-            quality: 0.9,
-            multiplier: multiplier
-        });
-        
-        var link = document.createElement('a');
+    function descargar(id, name) {
+        const canvas = document.getElementById(id);
+        const link = document.createElement('a');
         link.download = name;
-        link.href = dataURL;
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
         link.click();
     }
 </script>
