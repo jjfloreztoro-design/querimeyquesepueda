@@ -3,183 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tu foto de apoyo - Iván Cepeda y Aida Quilcué</title>
+    <title>Iván Cepeda & Aida Quilcué - Edición Táctil</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <style>
         :root { --morado: #512d6d; --naranja: #ff8a00; --crema: #fcfcf9; }
-        body { background-color: #f0f0f0; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 40px; color: #333; }
+        body { background-color: var(--crema); font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; color: #333; overflow-x: hidden; }
         
-        /* HEADER */
-        header { background: white; padding: 15px; border-bottom: 4px solid var(--naranja); display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .audio-container { background: #f0ebf5; padding: 8px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; }
-        audio { height: 28px; width: 160px; }
-        .logo-img { height: 50px; object-fit: contain; }
+        /* HEADER Y AUDIO ESTILO CAMPAÑA */
+        header { background: white; border-bottom: 4px solid var(--naranja); padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo-img { height: 50px; display: block; margin: 0 auto; object-fit: contain; }
 
-        /* GRID PRINCIPAL */
-        .main-grid { 
-            display: flex; 
-            flex-direction: row; /* Escritorio: Lado a lado */
-            gap: 20px; 
-            max-width: 1200px; 
-            margin: 20px auto; 
-            padding: 0 15px;
-        }
+        .main-container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        h1 { color: var(--morado); font-size: 1.4rem; margin: 0 0 10px; text-transform: uppercase; font-weight: 900; }
+        p.subtitle { font-size: 12px; margin-top: 0; color: #666; }
 
-        /* PANEL IZQUIERDO (CONTROL) */
-        .control-panel { 
-            flex: 0 0 380px; 
-            background: white; padding: 20px; border-radius: 20px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center;
-            height: fit-content;
-            position: sticky; top: 20px;
-        }
+        /* ZONA DE CARGA (PRIMERO EN MÓVIL) */
+        .controls-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .btn-upload { background: var(--morado); color: white; border: none; padding: 15px 30px; font-weight: bold; border-radius: 50px; cursor: pointer; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
+        .btn-upload:hover { background: var(--naranja); }
+
+        /* GRUPO DE EDICIÓN (DERECHA EN ESCRITORIO, ABAJO EN MÓVIL) */
+        .editor-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
         
-        .btn-upload { background: var(--morado); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-bottom: 15px; font-size: 14px; }
-        #canvas-editor { border: 2px solid #ddd; border-radius: 12px; background: #fafafa; max-width: 100%; }
-
-        /* PANEL DERECHO (RESULTADOS) */
-        .results-panel { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 20px; border: 1px solid #ddd; }
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; justify-items: center; }
+        /* Caja de Edición con Sliders */
+        .edition-box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); width: 100%; max-width: 380px; display: none; /* Se muestra al subir foto */ }
+        .canvas-wrapper { position: relative; margin-bottom: 15px; border-radius: 10px; overflow: hidden; }
+        canvas { background: #e0e0e0; touch-action: none; /* Crucial para móvil */ }
         
-        .result-item { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 340px; }
-        .result-item canvas { border-radius: 10px; background: white; width: 100% !important; height: auto !important; }
-        
-        .btn-download { background: var(--naranja); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
+        /* Estilo de los Sliders Deslizables */
+        .sliders-group { text-align: left; margin-top: 10px; display: none; }
+        .slider-control { margin-bottom: 12px; }
+        .slider-label { font-size: 11px; font-weight: bold; color: var(--morado); display: block; margin-bottom: 4px; }
+        input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { background: #eee; height: 8px; border-radius: 5px; }
+        input[type=range]::-webkit-slider-thumb { border: 2px solid var(--morado); height: 20px; width: 20px; border-radius: 50%; background: var(--naranja); cursor: pointer; -webkit-appearance: none; margin-top: -6px; }
 
-        h2 { font-size: 14px; color: var(--morado); text-transform: uppercase; margin-top: 0; letter-spacing: 1px; }
-        .instruction { font-size: 12px; color: #777; margin-bottom: 15px; font-weight: 500; }
+        .btn-download { background: var(--naranja); color: white; border: none; padding: 12px 20px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 15px; text-transform: uppercase; width: 100%; font-size: 11px; }
 
-        /* RESPONSIVE: PRIORIDAD MÓVIL */
-        @media (max-width: 900px) {
-            .main-grid { flex-direction: column; } /* Apilar verticalmente */
-            .control-panel { 
-                flex: none; 
-                width: auto; 
-                position: static; 
-                margin-bottom: 10px; 
-            }
-            .results-panel { padding: 15px; }
-            .results-grid { grid-template-columns: 1fr; }
-            .result-item { max-width: 100%; box-sizing: border-box; }
-        }
+        @media (max-width: 768px) { .editor-grid { flex-direction: column; align-items: center; } .edition-box { max-width: 350px; } }
     </style>
 </head>
 <body>
 
 <header>
     <img src="logo-cepeda.png" class="logo-img" alt="Logo">
-    <div class="audio-container">
-        <span style="font-size: 10px; font-weight: bold; color: var(--morado);">🎵 RIMAS:</span>
-        <audio controls src="cancion.mp3"></audio>
-    </div>
 </header>
 
-<div class="main-grid">
-    <div class="control-panel">
-        <h2>1. TU FOTO AQUÍ</h2>
-        <input type="file" id="file-input" hidden accept="image/*">
-        <button class="btn-upload" onclick="document.getElementById('file-input').click()">📂 CARGAR MI FOTO</button>
-        <p class="instruction">Usa tus dedos para mover, ampliar o girar la imagen:</p>
-        <canvas id="canvas-editor" width="340" height="340"></canvas>
+<div class="main-container">
+    <div class="controls-card">
+        <h1>CREA TU PERFIL OFICIAL</h1>
+        <p class="subtitle">Sube tu foto y acomódala dentro de los marcos en tiempo real.</p>
+        <input type="file" id="upload" hidden accept="image/*">
+        <button class="btn-upload" onclick="document.getElementById('upload').click()">📂 SELECCIONAR FOTO</button>
     </div>
 
-    <div class="results-panel">
-        <h2>2. VISTA PREVIA EN VIVO</h2>
-        <div class="results-grid">
-            <div class="result-item">
-                <p style="font-size:11px; font-weight:900; margin-bottom:10px;">DISEÑO: QUE RIME</p>
-                <canvas id="out1" width="340" height="340"></canvas>
-                <button class="btn-download" onclick="descargar('out1', 'perfil-cepeda-1.jpg')">📥 DESCARGAR DISEÑO 1</button>
+    <div class="editor-grid">
+        
+        <div class="edition-box" id="box1">
+            <p style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color:var(--morado)">DISEÑO 1: QUE RIME</p>
+            <div class="canvas-wrapper">
+                <canvas id="canvas1" width="340" height="340"></canvas>
             </div>
-            <div class="result-item">
-                <p style="font-size:11px; font-weight:900; margin-bottom:10px;">DISEÑO: PACTO</p>
-                <canvas id="out2" width="340" height="340"></canvas>
-                <button class="btn-download" onclick="descargar('out2', 'perfil-cepeda-2.jpg')">📥 DESCARGAR DISEÑO 2</button>
+            
+            <div class="sliders-group" id="sliders1">
+                <div class="slider-control">
+                    <label class="slider-label">AMPLIAR FOTO</label>
+                    <input type="range" id="zoom1" min="0.1" max="2" step="0.01" value="0.5">
+                </div>
+                <div class="slider-control">
+                    <label class="slider-label">ROTAR FOTO</label>
+                    <input type="range" id="rotate1" min="0" max="360" step="1" value="0">
+                </div>
             </div>
+            <button class="btn-download btn-cepeda" onclick="descargar(canvas1, 'perfil-cepeda-1.jpg')">📥 Descargar Diseño 1</button>
         </div>
+
+        <div class="edition-box" id="box2">
+            <p style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color:var(--morado)">DISEÑO 2: AIDA</p>
+            <div class="canvas-wrapper">
+                <canvas id="canvas2" width="340" height="340"></canvas>
+            </div>
+            
+            <div class="sliders-group" id="sliders2">
+                <div class="slider-control">
+                    <label class="slider-label">AMPLIAR FOTO</label>
+                    <input type="range" id="zoom2" min="0.1" max="2" step="0.01" value="0.5">
+                </div>
+                <div class="slider-control">
+                    <label class="slider-label">ROTAR FOTO</label>
+                    <input type="range" id="rotate2" min="0" max="360" step="1" value="0">
+                </div>
+            </div>
+            <button class="btn-download btn-cepeda" onclick="descargar(canvas2, 'perfil-cepeda-2.jpg')">📥 Descargar Diseño 2</button>
+        </div>
+
     </div>
 </div>
 
 <script>
-    const editor = new fabric.Canvas('canvas-editor');
-    const out1 = new fabric.StaticCanvas('out1');
-    const out2 = new fabric.StaticCanvas('out2');
+    // Configuración de los lienzos
+    const canvas1 = new fabric.Canvas('canvas1', { selection: true });
+    const canvas2 = new fabric.Canvas('canvas2', { selection: true });
     
-    let frame1, frame2, userImg;
+    // Variables para guardar las fotos cargadas
+    var userImg1, userImg2;
 
-    // Cargar marcos con detección de errores
+    // 1. CARGA INICIAL DE MARCOS
     function loadFrames() {
-        fabric.Image.fromURL('marco1.png', (img) => {
+        fabric.Image.fromURL('marco1.png', function(img) {
             img.set({ left: 0, top: 0, selectable: false, evented: false });
             img.scaleToWidth(340);
-            frame1 = img;
-            out1.add(frame1);
-            out1.renderAll();
-        }, { crossOrigin: 'anonymous' });
+            canvas1.add(img);
+            canvas1.renderAll();
+        });
 
-        fabric.Image.fromURL('marco2.png', (img) => {
+        fabric.Image.fromURL('marco2.png', function(img) {
             img.set({ left: 0, top: 0, selectable: false, evented: false });
             img.scaleToWidth(340);
-            frame2 = img;
-            out2.add(frame2);
-            out2.renderAll();
-        }, { crossOrigin: 'anonymous' });
+            canvas2.add(img);
+            canvas2.renderAll();
+        });
     }
+
     loadFrames();
 
-    // Subida de imagen
-    document.getElementById('file-input').onchange = function(e) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            if(userImg) {
-                editor.remove(userImg);
-                // Limpiar espejos conservando los marcos
-                [out1, out2].forEach(c => c.getObjects().forEach(obj => { if(obj.selectable === undefined) c.remove(obj); }));
-            }
-
-            fabric.Image.fromURL(event.target.result, (img) => {
-                img.set({
-                    left: 170, top: 170,
-                    originX: 'center', originY: 'center',
-                    cornerColor: '#ff8a00', cornerSize: 12, transparentCorners: false
-                });
-                img.scaleToWidth(280);
-                userImg = img;
-                
-                editor.add(userImg);
-                editor.setActiveObject(userImg);
-
-                // Clonar para los resultados
-                userImg.clone((c1) => { c1.selectable = false; out1.add(c1); out1.sendToBack(c1); });
-                userImg.clone((c2) => { c2.selectable = false; out2.add(c2); out2.sendToBack(c2); });
-            });
+    // 2. MANEJAR SUBIDA DE FOTO
+    document.getElementById('upload').addEventListener('change', function (e) {
+        var reader = new FileReader();
+        reader.onload = function (f) {
+            var imgData = f.target.result;
+            
+            // setupImageInCanvas(data, canvas, zoomSlider, rotateSlider, slidersGroup, boxGroup)
+            setupImageInCanvas(imgData, canvas1, 'zoom1', 'rotate1', 'sliders1', 'box1');
+            setupImageInCanvas(imgData, canvas2, 'zoom2', 'rotate2', 'sliders2', 'box2');
         };
         reader.readAsDataURL(e.target.files[0]);
-    };
-
-    // Espejo en tiempo real
-    editor.on('after:render', () => {
-        if (!userImg) return;
-        
-        const sync = (targetCanvas, targetFrame) => {
-            const mirror = targetCanvas.getObjects().find(obj => obj.selectable === false);
-            if(mirror) {
-                mirror.set({
-                    left: userImg.left, top: userImg.top,
-                    scaleX: userImg.scaleX, scaleY: userImg.scaleY,
-                    angle: userImg.angle, flipX: userImg.flipX, flipY: userImg.flipY
-                });
-                targetCanvas.renderAll();
-            }
-        };
-        sync(out1, frame1);
-        sync(out2, frame2);
     });
 
-    function descargar(canvasId, name) {
-        const c = document.getElementById(canvasId);
-        const dataURL = c.fabric.toDataURL({ format: 'jpeg', quality: 0.9, multiplier: 3 });
-        const link = document.createElement('a');
+    function setupImageInCanvas(data, canvas, zoomId, rotateId, sliderGroupId, boxId) {
+        // Eliminar foto anterior (objetos seleccionables)
+        canvas.getObjects().forEach(obj => {
+            if (obj.selectable) canvas.remove(obj);
+        });
+
+        fabric.Image.fromURL(data, function (img) {
+            img.set({
+                left: 170, top: 170, // Centrado
+                originX: 'center', originY: 'center',
+                hasControls: false, // Ocultar esquinas cuadradas
+                hasBorders: false, // Ocultar borde azul
+                selectable: true // Permitir arrastrar con el dedo
+            });
+            img.scaleToWidth(250); // Escala inicial
+
+            canvas.add(img);
+            
+            // LA MAGIA: Poner la foto DETRÁS del marco PNG
+            canvas.getObjects().forEach(obj => {
+                if(!obj.selectable) canvas.bringToFront(obj);
+            });
+            
+            canvas.setActiveObject(img);
+            canvas.renderAll();
+
+            // Guardar referencia
+            if(canvas.id === 'canvas1') userImg1 = img;
+            else userImg2 = img;
+
+            // Mostrar los controles deslizables y el diseño
+            document.getElementById(boxId).style.display = 'block';
+            document.getElementById(sliderGroupId).style.display = 'block';
+            
+            // Inicializar Sliders
+            initSliderEvents(img, canvas, zoomId, rotateId);
+        });
+    }
+
+    // 3. LA MAGIA: CONECTAR SLIDERS CON LA FOTO
+    function initSliderEvents(imgObj, canvasObj, zoomId, rotateId) {
+        const zoomSlider = document.getElementById(zoomId);
+        const rotateSlider = document.getElementById(rotateId);
+
+        // Resetear sliders a valores iniciales
+        zoomSlider.value = imgObj.scaleX;
+        rotateSlider.value = imgObj.angle;
+
+        // Zoom en tiempo real
+        zoomSlider.addEventListener('input', function() {
+            imgObj.set({
+                scaleX: parseFloat(this.value),
+                scaleY: parseFloat(this.value)
+            });
+            canvasObj.renderAll();
+        });
+
+        // Rotación en tiempo real
+        rotateSlider.addEventListener('input', function() {
+            imgObj.set('angle', parseInt(this.value, 10));
+            canvasObj.renderAll();
+        });
+    }
+
+    // 4. DESCARGA ALTA CALIDAD
+    function descargar(canvasElement, name) {
+        // Obtenemos el objeto Fabric asociado al elemento HTML
+        const fabCanvas = canvasElement.fabric;
+        const multiplier = (1080 / 340); // Convertir 340px a 1080px (Alta calidad)
+        
+        const dataURL = fabCanvas.toDataURL({
+            format: 'jpeg',
+            quality: 0.9,
+            multiplier: multiplier
+        });
+        
+        var link = document.createElement('a');
         link.download = name;
         link.href = dataURL;
         link.click();
