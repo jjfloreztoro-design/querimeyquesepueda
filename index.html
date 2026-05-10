@@ -3,159 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Iván Cepeda Presidente - Aida Quilcué Vicepresindeta- Crea tu foto de apoyo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
+    <title>Iván Cepeda & Aida Quilcué - Edición Independiente</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <style>
         :root { --morado: #512d6d; --naranja: #ff8a00; --crema: #fcfcf9; }
         body { background-color: var(--crema); font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; color: #333; }
         
-        /* Barra de Audio Superior - Compacta */
-        .audio-top-bar {
-            background: #f0ebf5; padding: 8px; border-bottom: 1px solid #ddd;
-            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 11px;
-        }
-        audio { height: 28px; width: 180px; }
-
         header { background: white; padding: 10px; border-bottom: 4px solid var(--naranja); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo-img { height: 45px; }
 
-        .main-container { max-width: 500px; margin: 15px auto; padding: 0 15px; }
+        .main-container { max-width: 1000px; margin: 15px auto; padding: 0 15px; }
         
-        h1 { color: var(--morado); font-size: 1.3rem; margin: 10px 0 5px; text-transform: uppercase; font-weight: 900; }
-        
-        /* Zona del Editor */
-        #editor-wrapper { margin: 15px 0; background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        /* Muestras iniciales */
-        .preview-samples { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
-        .sample-box { width: 80px; text-align: center; font-size: 10px; opacity: 0.8; }
-        .sample-box img { width: 100%; border-radius: 50%; border: 2px solid var(--naranja); margin-bottom: 5px; }
+        .editor-layout {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Columna de controles a la izquierda */
+        .side-controls {
+            width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .canvas-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .canvas-box {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        }
 
         .btn-cepeda {
             background-color: var(--morado); color: white; border: none;
-            padding: 14px 30px; font-weight: bold; border-radius: 50px;
+            padding: 12px 15px; font-weight: bold; border-radius: 50px;
             cursor: pointer; text-transform: uppercase; width: 100%;
-            transition: 0.3s; margin: 5px 0; font-size: 14px;
+            transition: 0.3s; font-size: 11px;
         }
         .btn-naranja { background-color: var(--naranja); }
+        
+        canvas { border-radius: 8px; touch-action: none; }
 
-        /* Resultados en Cuadrícula */
-        .preview-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            margin-top: 20px; display: none;
+        h2 { font-size: 14px; color: var(--morado); margin-bottom: 10px; text-transform: uppercase; }
+        
+        @media (max-width: 768px) {
+            .side-controls { width: 100%; flex-direction: row; flex-wrap: wrap; }
+            .btn-cepeda { flex: 1; min-width: 120px; }
         }
-        .preview-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        canvas { width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px; }
-        .btn-sm { padding: 8px 15px; font-size: 11px; }
-
-        @media (max-width: 400px) { h1 { font-size: 1.1rem; } }
     </style>
 </head>
 <body>
 
-<div class="audio-top-bar">
-    <span style="font-weight:bold; color:var(--morado)">🎵 LAS RIMAS PRESIDENCIALES:</span>
-    <audio controls src="cancion.mp3"></audio>
-</div>
-
 <header>
-    <img src="logo-cepeda.jpg" class="logo-img" alt="Iván Cepeda Presidente">
+    <img src="logo-cepeda.jpg" class="logo-img" alt="Logo">
 </header>
 
 <div class="main-container">
-    <h1>¡Que rime y que se pueda!</h1>
-    <p style="font-size: 14px; margin-top: 0;">Sube tu foto y crea imagen de apoyo.</p>
+    <h1 style="color: var(--morado); font-size: 1.4rem; margin: 15px 0 5px;">AJUSTE INDEPENDIENTE</h1>
+    <p style="font-size: 13px;">Sube tu foto y acomódala en cada marco según el tamaño del círculo.</p>
 
-    <div class="preview-samples" id="samples">
-        <div class="sample-box">
-            <img src="muestra1.jpg" alt="Ejemplo 1">
-            <span>DISEÑO 1</span>
+    <div class="editor-layout">
+        
+        <div class="side-controls">
+            <input type="file" id="upload" hidden accept="image/*">
+            <button class="btn-cepeda" onclick="document.getElementById('upload').click()">📂 Subir mi foto</button>
+            <button class="btn-cepeda btn-naranja" id="btn-dl-1" style="display:none;" onclick="download(canvas1, 'perfil-1.jpg')">📥 Descargar 1</button>
+            <button class="btn-cepeda btn-naranja" id="btn-dl-2" style="display:none;" onclick="download(canvas2, 'perfil-2.jpg')">📥 Descargar 2</button>
+            <p style="font-size: 10px; color: #888;">Mueve, escala o gira tu foto en cada cuadro por separado.</p>
         </div>
-        <div class="sample-box">
-            <img src="muestra2.jpg" alt="Ejemplo 2">
-            <span>DISEÑO 2</span>
-        </div>
-    </div>
 
-    <input type="file" id="upload" hidden accept="image/*">
-    <button class="btn-cepeda" id="btn-select" onclick="document.getElementById('upload').click()">1. Seleccionar mi foto</button>
-
-    <div id="editor-wrapper" style="display:none;">
-        <div id="cropper-tool"></div>
-        <button class="btn-cepeda btn-naranja" onclick="procesarAmbos()">2. Generar mis fotos</button>
-    </div>
-
-    <div class="preview-grid" id="resultado-grid">
-        <div class="preview-card">
-            <canvas id="canvas1"></canvas>
-            <button class="btn-cepeda btn-sm" onclick="descargar(1)">Descargar 1</button>
+        <div class="canvas-group">
+            <div class="canvas-box">
+                <h2>Diseño 1</h2>
+                <canvas id="canvas1" width="350" height="350"></canvas>
+            </div>
+            <div class="canvas-box">
+                <h2>Diseño 2</h2>
+                <canvas id="canvas2" width="350" height="350"></canvas>
+            </div>
         </div>
-        <div class="preview-card">
-            <canvas id="canvas2"></canvas>
-            <button class="btn-cepeda btn-sm" onclick="descargar(2)">Descargar 2</button>
-        </div>
+
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-
 <script>
-    var $uploadCrop;
-    const marcos = ['marco1.png', 'marco2.png'];
+    // Inicialización de dos lienzos independientes
+    var canvas1 = new fabric.Canvas('canvas1', { selection: true });
+    var canvas2 = new fabric.Canvas('canvas2', { selection: true });
 
-    $uploadCrop = $('#cropper-tool').croppie({
-        viewport: { width: 250, height: 250, type: 'circle' },
-        boundary: { width: 280, height: 280 },
-        showZoomer: true
-    });
+    // Cargar Marcos como capas fijas superiores
+    function loadFrame(url, canvas) {
+        fabric.Image.fromURL(url, function(img) {
+            img.set({
+                left: 0, top: 0, 
+                selectable: false, 
+                evented: false, 
+                zIndex: 99
+            });
+            img.scaleToWidth(350);
+            canvas.add(img);
+            canvas.renderAll();
+        });
+    }
 
-    $('#upload').on('change', function () {
+    loadFrame('marco1.png', canvas1);
+    loadFrame('marco2.png', canvas2);
+
+    // Manejar la subida de imagen
+    document.getElementById('upload').addEventListener('change', function (e) {
         var reader = new FileReader();
-        reader.onload = function (e) {
-            $uploadCrop.croppie('bind', { url: e.target.result });
-            $('#editor-wrapper').fadeIn();
-            $('#samples').hide();
-            $('#resultado-grid').hide();
-            $('#btn-select').text("Cambiar Foto");
-        }
-        reader.readAsDataURL(this.files[0]);
+        reader.onload = function (f) {
+            var imgData = f.target.result;
+            
+            // Añadir a Canvas 1
+            addImageToCanvas(imgData, canvas1);
+            // Añadir a Canvas 2
+            addImageToCanvas(imgData, canvas2);
+
+            document.getElementById('btn-dl-1').style.display = 'block';
+            document.getElementById('btn-dl-2').style.display = 'block';
+        };
+        reader.readAsDataURL(e.target.files[0]);
     });
 
-    async function procesarAmbos() {
-        const imgFinal = await $uploadCrop.croppie('result', {
-            type: 'canvas',
-            size: { width: 1080, height: 1080 },
-            circle: false
+    function addImageToCanvas(data, canvas) {
+        // Eliminar imagen anterior si existe (buscando por zIndex bajo)
+        var objects = canvas.getObjects();
+        objects.forEach(function(obj) {
+            if (obj.selectable) canvas.remove(obj);
         });
 
-        renderizar(imgFinal, marcos[0], 'canvas1');
-        renderizar(imgFinal, marcos[1], 'canvas2');
-        $('#resultado-grid').css('display', 'grid');
-        window.scrollTo(0, document.body.scrollHeight);
+        fabric.Image.fromURL(data, function (img) {
+            img.set({
+                left: 175, top: 175,
+                originX: 'center', originY: 'center',
+                cornerColor: '#ff8a00',
+                cornerSize: 12,
+                transparentCorners: false,
+                borderColor: '#512d6d'
+            });
+            img.scaleToWidth(250);
+            canvas.add(img);
+            
+            // IMPORTANTE: Asegurar que el marco quede SIEMPRE arriba
+            canvas.getObjects().forEach(function(obj) {
+                if(!obj.selectable) canvas.bringToFront(obj);
+            });
+            
+            canvas.setActiveObject(img);
+            canvas.renderAll();
+        });
     }
 
-    function renderizar(userImg, marcoUrl, canvasId) {
-        var canvas = document.getElementById(canvasId);
-        canvas.width = 1080; canvas.height = 1080;
-        var ctx = canvas.getContext('2d');
-        var imgM = new Image();
-        imgM.src = marcoUrl;
-        imgM.onload = function() {
-            var imgU = new Image();
-            imgU.src = userImg;
-            imgU.onload = function() {
-                ctx.drawImage(imgU, 0, 0, 1080, 1080);
-                ctx.drawImage(imgM, 0, 0, 1080, 1080);
-            }
-        }
-    }
-
-    function descargar(num) {
-        var canvas = document.getElementById('canvas' + num);
+    // Función de descarga
+    function download(canvas, name) {
+        var multiplier = 1080 / 350; // Para que baje en 1080px (Alta calidad)
+        var dataURL = canvas.toDataURL({
+            format: 'jpeg',
+            quality: 0.9,
+            multiplier: multiplier
+        });
         var link = document.createElement('a');
-        link.download = 'perfil-cepeda-quicue-' + num + '.jpg';
-        link.href = canvas.toDataURL("image/jpeg", 0.9);
+        link.download = name;
+        link.href = dataURL;
         link.click();
     }
 </script>
