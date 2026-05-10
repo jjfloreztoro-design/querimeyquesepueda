@@ -21,10 +21,11 @@
         .canvas-group { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
         .canvas-box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 6px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
 
-        .btn-cepeda { background-color: var(--morado); color: white; border: none; padding: 14px 20px; font-weight: bold; border-radius: 50px; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 12px; }
+        .btn-cepeda { background-color: var(--morado); color: white; border: none; padding: 14px 20px; font-weight: bold; border-radius: 50px; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 12px; transition: 0.3s; }
+        .btn-cepeda:hover { opacity: 0.8; }
         .btn-download { background-color: var(--naranja); margin-top: 15px; }
         
-        canvas { border-radius: 8px; touch-action: none; background: #f0f0f0; border: 1px dashed #ccc; }
+        canvas { border-radius: 8px; touch-action: none; background: #fff; border: 1px solid #eee; }
         h2 { font-size: 13px; color: var(--morado); margin-bottom: 12px; text-transform: uppercase; font-weight: 900; }
         
         @media (max-width: 768px) { .side-controls { width: 100%; } .canvas-box { width: 100%; } }
@@ -42,7 +43,7 @@
 
 <div class="main-container">
     <h1 style="color: var(--morado); font-size: 1.4rem; margin: 10px 0 5px;">EDICIÓN EN TIEMPO REAL</h1>
-    <p style="font-size: 12px;">1. Sube tu foto | 2. Arrástrala dentro de los marcos</p>
+    <p style="font-size: 12px;">1. Selecciona tu foto | 2. Acomódala debajo de los marcos</p>
 
     <div class="editor-layout">
         <div class="side-controls">
@@ -54,43 +55,48 @@
             <div class="canvas-box">
                 <h2>Diseño 1</h2>
                 <canvas id="canvas1" width="350" height="350"></canvas>
-                <button class="btn-cepeda btn-download" onclick="download(canvas1, 'perfil-1.jpg')">📥 DESCARGAR 1</button>
+                <button class="btn-cepeda btn-download" onclick="download(canvas1, 'perfil-cepeda-1.jpg')">📥 DESCARGAR 1</button>
             </div>
             <div class="canvas-box">
                 <h2>Diseño 2</h2>
                 <canvas id="canvas2" width="350" height="350"></canvas>
-                <button class="btn-cepeda btn-download" onclick="download(canvas2, 'perfil-2.jpg')">📥 DESCARGAR 2</button>
+                <button class="btn-cepeda btn-download" onclick="download(canvas2, 'perfil-cepeda-2.jpg')">📥 DESCARGAR 2</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var canvas1 = new fabric.Canvas('canvas1', { selection: true });
-    var canvas2 = new fabric.Canvas('canvas2', { selection: true });
+    // Inicializar Canvas
+    var canvas1 = new fabric.Canvas('canvas1');
+    var canvas2 = new fabric.Canvas('canvas2');
     var frame1, frame2;
 
-    // Función para cargar marcos con detección de errores
-    function initFrames() {
-        fabric.Image.fromURL('marco1.png', function(img, isError) {
-            if(isError) { console.error("No se encontró marco1.png"); return; }
+    // CARGA DE MARCOS - Con bypass de caché y crossOrigin
+    function loadFrames() {
+        // Marco 1
+        fabric.Image.fromURL('marco1.png?v=' + Date.now(), function(img) {
             img.set({ left: 0, top: 0, selectable: false, evented: false });
             img.scaleToWidth(350);
             frame1 = img;
             canvas1.add(frame1);
-        });
+            canvas1.renderAll();
+        }, { crossOrigin: 'anonymous' });
 
-        fabric.Image.fromURL('marco2.png', function(img, isError) {
-            if(isError) { console.error("No se encontró marco2.png"); return; }
+        // Marco 2
+        fabric.Image.fromURL('marco2.png?v=' + Date.now(), function(img) {
             img.set({ left: 0, top: 0, selectable: false, evented: false });
             img.scaleToWidth(350);
             frame2 = img;
             canvas2.add(frame2);
-        });
+            canvas2.renderAll();
+        }, { crossOrigin: 'anonymous' });
     }
 
-    initFrames();
+    // Ejecutar carga
+    loadFrames();
 
+    // Lógica de subida
     document.getElementById('upload').addEventListener('change', function (e) {
         var reader = new FileReader();
         reader.onload = function (f) {
@@ -102,20 +108,31 @@
     });
 
     function setupImg(data, canvas, frame) {
-        // Limpiar fotos previas
+        // Eliminar fotos previas (objetos seleccionables)
         canvas.getObjects().forEach(obj => { if(obj.selectable) canvas.remove(obj); });
         
         fabric.Image.fromURL(data, function(img) {
-            img.set({ left: 175, top: 175, originX: 'center', originY: 'center' });
-            img.scaleToWidth(300);
+            img.set({ 
+                left: 175, 
+                top: 175, 
+                originX: 'center', 
+                originY: 'center',
+                cornerColor: '#ff8a00',
+                transparentCorners: false
+            });
+            img.scaleToWidth(280);
             canvas.add(img);
-            if(frame) canvas.bringToFront(frame); // Asegura que el marco tape la foto
+            
+            // Forzar que el marco esté SIEMPRE al frente
+            if(frame) canvas.bringToFront(frame);
+            
             canvas.setActiveObject(img);
             canvas.renderAll();
         });
     }
 
     function download(canvas, name) {
+        // El multiplicador 3 genera un archivo de 1050x1050px (Alta calidad)
         var dataURL = canvas.toDataURL({ format: 'jpeg', quality: 0.9, multiplier: 3 });
         var link = document.createElement('a');
         link.download = name;
