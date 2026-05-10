@@ -2,97 +2,97 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apoyo a Iván Cepeda y Aida Quicué - Generador Automático</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iván Cepeda Presidente - Generador de Apoyo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
     <style>
-        :root {
-            --morado-cepeda: #512d6d;
-            --naranja-cepeda: #ff8a00;
-            --crema-fondo: #fcfcf9;
-        }
-
-        body {
-            background-color: var(--crema-fondo);
-            font-family: 'Montserrat', sans-serif;
-            margin: 0; text-align: center;
-        }
-
-        header {
-            background: white;
-            padding: 15px;
-            border-bottom: 4px solid var(--naranja-cepeda);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .main-container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        :root { --morado: #512d6d; --naranja: #ff8a00; --crema: #fcfcf9; }
+        body { background-color: var(--crema); font-family: 'Montserrat', sans-serif; margin: 0; text-align: center; color: #333; }
         
-        /* Contenedor de Previsualización Doble */
-        .preview-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            display: none; /* Se activa al subir foto */
+        /* Barra de Audio Superior - Compacta */
+        .audio-top-bar {
+            background: #f0ebf5; padding: 8px; border-bottom: 1px solid #ddd;
+            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 11px;
         }
+        audio { height: 28px; width: 180px; }
 
-        .preview-card {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        header { background: white; padding: 10px; border-bottom: 4px solid var(--naranja); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo-img { height: 45px; }
 
-        canvas { width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px; }
+        .main-container { max-width: 500px; margin: 15px auto; padding: 0 15px; }
+        
+        h1 { color: var(--morado); font-size: 1.3rem; margin: 10px 0 5px; text-transform: uppercase; font-weight: 900; }
+        
+        /* Zona del Editor */
+        #editor-wrapper { margin: 15px 0; background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        /* Muestras iniciales */
+        .preview-samples { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
+        .sample-box { width: 80px; text-align: center; font-size: 10px; opacity: 0.8; }
+        .sample-box img { width: 100%; border-radius: 50%; border: 2px solid var(--naranja); margin-bottom: 5px; }
 
         .btn-cepeda {
-            background-color: var(--morado-cepeda);
-            color: white; border: none;
-            padding: 12px 30px;
-            font-weight: bold; border-radius: 50px;
-            cursor: pointer; text-transform: uppercase;
-            transition: 0.3s; margin: 10px;
+            background-color: var(--morado); color: white; border: none;
+            padding: 14px 30px; font-weight: bold; border-radius: 50px;
+            cursor: pointer; text-transform: uppercase; width: 100%;
+            transition: 0.3s; margin: 5px 0; font-size: 14px;
         }
+        .btn-naranja { background-color: var(--naranja); }
 
-        .btn-cepeda:hover { background-color: var(--naranja-cepeda); }
-        
-        #editor-wrapper { margin-bottom: 30px; }
+        /* Resultados en Cuadrícula */
+        .preview-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            margin-top: 20px; display: none;
+        }
+        .preview-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        canvas { width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px; }
+        .btn-sm { padding: 8px 15px; font-size: 11px; }
+
+        @media (max-width: 400px) { h1 { font-size: 1.1rem; } }
     </style>
 </head>
 <body>
 
-<header>
-    <!-- Reproductor de Audio Estilo Campaña -->
-<div style="background: #f0ebf5; padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">
-    <p style="margin: 0 0 5px 0; font-size: 12px; font-weight: bold; color: #512d6d;">🎵 ESCUCHA Edson Velandia y Adriana Lizcano - Las Rimas Presidenciales</p>
-    <audio controls style="height: 30px; border-radius: 50px;">
-        <source src="cancion.mp3" type="audio/mpeg">
-        Tu navegador no soporta el audio.
-    </audio>
+<div class="audio-top-bar">
+    <span style="font-weight:bold; color:var(--morado)">🎵 LAS RIMAS PRESIDENCIALES:</span>
+    <audio controls src="cancion.mp3"></audio>
 </div>
-    <img src="logo-cepeda.jpg" alt="Iván Cepeda Presidente" style="height: 60px;">
+
+<header>
+    <img src="logo-cepeda.jpg" class="logo-img" alt="Iván Cepeda Presidente">
 </header>
 
 <div class="main-container">
-    <h1 style="color: var(--morado-cepeda);">¡Que rime y que se pueda!</h1>
-    <p>Sube tu foto y obten dos diseños para tu imagen de perfil.</p>
+    <h1>¡Que rime y que se pueda!</h1>
+    <p style="font-size: 14px; margin-top: 0;">Sube tu foto y crea tus perfiles oficiales.</p>
+
+    <div class="preview-samples" id="samples">
+        <div class="sample-box">
+            <img src="muestra1.jpg" alt="Ejemplo 1">
+            <span>DISEÑO 1</span>
+        </div>
+        <div class="sample-box">
+            <img src="muestra2.jpg" alt="Ejemplo 2">
+            <span>DISEÑO 2</span>
+        </div>
+    </div>
 
     <input type="file" id="upload" hidden accept="image/*">
-    <button class="btn-cepeda" onclick="document.getElementById('upload').click()">1. SUBIR MI FOTO</button>
+    <button class="btn-cepeda" id="btn-select" onclick="document.getElementById('upload').click()">1. Seleccionar mi foto</button>
 
     <div id="editor-wrapper" style="display:none;">
         <div id="cropper-tool"></div>
-        <button class="btn-cepeda" style="background: var(--naranja-cepeda);" onclick="procesarAmbos()">2. APLICAR A LOS MARCOS</button>
+        <button class="btn-cepeda btn-naranja" onclick="procesarAmbos()">2. Generar mis fotos</button>
     </div>
 
     <div class="preview-grid" id="resultado-grid">
         <div class="preview-card">
             <canvas id="canvas1"></canvas>
-            <button class="btn-cepeda" onclick="descargar(1)">Descargar Diseño 1</button>
+            <button class="btn-cepeda btn-sm" onclick="descargar(1)">Descargar 1</button>
         </div>
         <div class="preview-card">
             <canvas id="canvas2"></canvas>
-            <button class="btn-cepeda" onclick="descargar(2)">Descargar Diseño 2</button>
+            <button class="btn-cepeda btn-sm" onclick="descargar(2)">Descargar 2</button>
         </div>
     </div>
 </div>
@@ -105,8 +105,8 @@
     const marcos = ['marco1.png', 'marco2.png'];
 
     $uploadCrop = $('#cropper-tool').croppie({
-        viewport: { width: 300, height: 300, type: 'circle' },
-        boundary: { width: 350, height: 350 },
+        viewport: { width: 250, height: 250, type: 'circle' },
+        boundary: { width: 280, height: 280 },
         showZoomer: true
     });
 
@@ -115,7 +115,9 @@
         reader.onload = function (e) {
             $uploadCrop.croppie('bind', { url: e.target.result });
             $('#editor-wrapper').fadeIn();
+            $('#samples').hide();
             $('#resultado-grid').hide();
+            $('#btn-select').text("Cambiar Foto");
         }
         reader.readAsDataURL(this.files[0]);
     });
@@ -137,7 +139,6 @@
         var canvas = document.getElementById(canvasId);
         canvas.width = 1080; canvas.height = 1080;
         var ctx = canvas.getContext('2d');
-        
         var imgM = new Image();
         imgM.src = marcoUrl;
         imgM.onload = function() {
@@ -153,7 +154,7 @@
     function descargar(num) {
         var canvas = document.getElementById('canvas' + num);
         var link = document.createElement('a');
-        link.download = 'apoyo-cepeda-' + num + '.jpg';
+        link.download = 'perfil-cepeda-quicue-' + num + '.jpg';
         link.href = canvas.toDataURL("image/jpeg", 0.9);
         link.click();
     }
